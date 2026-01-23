@@ -1,2 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
 .venv/
-test.py
+venv/
+ENV/
+env/
+
+# Model weights (large files)
+*.pth
+*.pt
+*.h5
+*.pkl
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+frontend/.env.local
+
+# Backend
+backend/__pycache__/
+backend/.pytest_cache/
+
+# Training data (can be large)
+training/dataset/
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
