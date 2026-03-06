@@ -1,0 +1,20 @@
+services:
+  # ---- Backend: FastAPI + PyTorch ----
+  backend:
+    build: ./backend
+    container_name: drip-backend
+    ports:
+      - "8000:8000"    # Access API directly at localhost:8000
+    volumes:
+      - ./backend/weights:/app/weights   # So you can swap model weights without rebuilding
+    restart: unless-stopped
+
+  # ---- Frontend: React (served by Nginx) ----
+  frontend:
+    build: ./frontend
+    container_name: drip-frontend
+    ports:
+      - "3000:80"      # Access UI at localhost:3000
+    depends_on:
+      - backend         # Start backend first
+    restart: unless-stopped

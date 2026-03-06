@@ -16,31 +16,36 @@ DripDetector is a full-stack web application that uses a custom-trained ResNet18
 - **📊 Confidence Scores** - See detailed probability breakdown for each style
 - **⚡ Fast Inference** - Real-time predictions with optimized model
 - **🎨 Modern UI** - Clean, responsive design built with React and Tailwind CSS
-- **🐳 Docker Ready** - Containerized backend for easy deployment
+- **🐳 Docker Ready** - Fully containerized with Docker Compose (one command to run everything)
 
 ## 🏗️ Architecture
 
 ```
-┌─────────────────┐
-│  React Frontend │ (Vite + Tailwind CSS)
-│   Port: 5173    │
-└────────┬────────┘
-         │ HTTP
-         │ POST /predict
-         ↓
-┌─────────────────┐
-│  FastAPI Backend│ (Python + PyTorch)
-│   Port: 8000    │
-├─────────────────┤
-│  ResNet18 Model │ (5-class classifier)
-│  drip_model.pth │
-└─────────────────┘
+              Docker Compose
+┌──────────────────────────────────────┐
+│                                      │
+│  ┌─────────────────┐                 │
+│  │  React Frontend │ (Nginx)         │
+│  │   Port: 3000    │                 │
+│  └────────┬────────┘                 │
+│           │ /predict (proxied)       │
+│           ↓                          │
+│  ┌─────────────────┐                 │
+│  │  FastAPI Backend│ (Python+PyTorch)│
+│  │   Port: 8000    │                 │
+│  ├─────────────────┤                 │
+│  │  ResNet18 Model │                 │
+│  │  drip_model.pth │                 │
+│  └─────────────────┘                 │
+│                                      │
+└──────────────────────────────────────┘
 ```
 
 ## 📂 Project Structure
 
 ```
 drip-detector/
+├── docker-compose.yml    # Orchestrates both services
 ├── backend/              # FastAPI server
 │   ├── app/
 │   │   ├── main.py      # API endpoints
@@ -57,6 +62,8 @@ drip-detector/
 │   │   │   ├── DragDrop.jsx    # File upload component
 │   │   │   └── ResultCard.jsx   # Results display
 │   │   └── App.jsx
+│   ├── Dockerfile
+│   ├── nginx.conf       # Nginx config (serves UI + proxies API)
 │   ├── package.json
 │   └── vite.config.js
 └── training/            # Model training scripts
@@ -110,12 +117,36 @@ The app will be available at `http://localhost:5173`
 
 ## 🐳 Docker Deployment
 
-### Backend with Docker
+The easiest way to run the entire app — no Python or Node.js setup needed.
+
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+
+### Run with Docker Compose
 
 ```bash
-cd backend
-docker build -t drip-detector-backend .
-docker run -p 8000:8000 drip-detector-backend
+# Build and start both frontend + backend
+docker compose up --build
+
+# Frontend (UI):  http://localhost:3000
+# Backend (API):  http://localhost:8000
+```
+
+### Useful Commands
+
+```bash
+# Start in background (detached mode)
+docker compose up -d
+
+# Stop everything
+docker compose down
+
+# Rebuild after code changes
+docker compose up --build
+
+# View logs
+docker compose logs -f
 ```
 
 ## 📊 Supported Fashion Styles

@@ -2,6 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+
 export default function DragDrop({ setResponse }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -19,7 +21,7 @@ export default function DragDrop({ setResponse }) {
 
     try {
       // Send to your FastAPI backend
-      const res = await axios.post('http://127.0.0.1:8000/predict', formData, {
+      const res = await axios.post(`${API_URL}/predict`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
